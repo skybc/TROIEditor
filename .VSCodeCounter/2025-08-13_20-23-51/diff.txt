@@ -1,0 +1,131 @@
+Date : 2025-08-13 20:23:51
+Directory : e:\project\2025\TROIEditor\TROIEditor
+Total : 88 files,  5400 codes, 264 comments, 179 blanks, all 5843 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| C#         |         48 |      3,480 |        264 |        165 |      3,909 |
+| XAML       |          2 |        799 |          0 |          0 |        799 |
+| Markdown   |          2 |        407 |          0 |          0 |        407 |
+| JSON       |          6 |        332 |          0 |          0 |        332 |
+| Properties |         18 |        294 |          0 |         14 |        308 |
+| XML        |         12 |         88 |          0 |          0 |         88 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                   |         88 |      5,400 |        264 |        179 |      5,843 |
+| . (Files)                                                                                                                           |          3 |        432 |         -3 |         -1 |        428 |
+| Controls                                                                                                                            |          2 |      1,194 |          0 |          0 |      1,194 |
+| SampleApp                                                                                                                           |          3 |        976 |          0 |          0 |        976 |
+| SampleApp\ViewModels                                                                                                                |          1 |        207 |          0 |          0 |        207 |
+| SampleApp\Views                                                                                                                     |          2 |        769 |          0 |          0 |        769 |
+| ViewModels                                                                                                                          |          1 |      1,556 |          0 |          0 |      1,556 |
+| obj                                                                                                                                 |         79 |      1,242 |        267 |        180 |      1,689 |
+| obj (Files)                                                                                                                         |         18 |        420 |          0 |          0 |        420 |
+| obj\Debug                                                                                                                           |         61 |        822 |        267 |        180 |      1,269 |
+| obj\Debug\net8.0-windows                                                                                                            |         61 |        822 |        267 |        180 |      1,269 |
+| obj\Debug\net8.0-windows (Files)                                                                                                    |         57 |        570 |        207 |        118 |        895 |
+| obj\Debug\net8.0-windows\Controls                                                                                                   |          2 |        138 |         30 |         36 |        204 |
+| obj\Debug\net8.0-windows\SampleApp                                                                                                  |          2 |        114 |         30 |         26 |        170 |
+| obj\Debug\net8.0-windows\SampleApp\Views                                                                                            |          2 |        114 |         30 |         26 |        170 |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                                            | language   | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| e:\project\2025\TROIEditor\TROIEditor\Configuration.md                                                                              | Markdown   |         73 |          0 |          0 |         73 |
+| e:\project\2025\TROIEditor\TROIEditor\Controls\RoiEditorControl.xaml                                                                | XAML       |         67 |          0 |          0 |         67 |
+| e:\project\2025\TROIEditor\TROIEditor\Controls\RoiEditorControl.xaml.cs                                                             | C#         |      1,127 |          0 |          0 |      1,127 |
+| e:\project\2025\TROIEditor\TROIEditor\MainWindow.xaml.cs                                                                            | C#         |         25 |         -3 |         -1 |         21 |
+| e:\project\2025\TROIEditor\TROIEditor\README.md                                                                                     | Markdown   |        334 |          0 |          0 |        334 |
+| e:\project\2025\TROIEditor\TROIEditor\SampleApp\ViewModels\RoiEditorDemoViewModel.cs                                                | C#         |        207 |          0 |          0 |        207 |
+| e:\project\2025\TROIEditor\TROIEditor\SampleApp\Views\RoiEditorDemoWindow.xaml                                                      | XAML       |        732 |          0 |          0 |        732 |
+| e:\project\2025\TROIEditor\TROIEditor\SampleApp\Views\RoiEditorDemoWindow.xaml.cs                                                   | C#         |         37 |          0 |          0 |         37 |
+| e:\project\2025\TROIEditor\TROIEditor\ViewModels\RoiEditorViewModel.cs                                                              | C#         |      1,556 |          0 |          0 |      1,556 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\Controls\RoiEditorControl.g.cs                                       | C#         |         69 |         15 |         18 |        102 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\Controls\RoiEditorControl.g.i.cs                                     | C#         |         69 |         15 |         18 |        102 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs                                     | C#         |         26 |         27 |         10 |         63 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.i.cs                                   | C#         |         26 |         27 |         10 |         63 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\SampleApp\Views\RoiEditorDemoWindow.g.cs                             | C#         |         57 |         15 |         13 |         85 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\SampleApp\Views\RoiEditorDemoWindow.g.i.cs                           | C#         |         57 |         15 |         13 |         85 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor.AssemblyInfo.cs                                           | C#         |          0 |         -1 |          0 |         -1 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_0khymdu1_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_0khymdu1_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_0khymdu1_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5d2ypyxl_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5d2ypyxl_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5d2ypyxl_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5djg5100_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5djg5100_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_5djg5100_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_akeotqfv_wpftmp.AssemblyInfo.cs                           | C#         |        -11 |        -10 |         -5 |        -26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_akeotqfv_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |        -21 |          0 |         -1 |        -22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_akeotqfv_wpftmp.GlobalUsings.g.cs                         | C#         |         -5 |         -1 |         -1 |         -7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_atigpr3l_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_atigpr3l_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_atigpr3l_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_frgmh2oc_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_frgmh2oc_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_frgmh2oc_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_g0gpft5z_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_g0gpft5z_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_g0gpft5z_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_gmq50gfi_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_gmq50gfi_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_gmq50gfi_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_mhfb5vmj_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_mhfb5vmj_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_mhfb5vmj_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_odgenulo_wpftmp.AssemblyInfo.cs                           | C#         |        -11 |        -10 |         -5 |        -26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_odgenulo_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |        -21 |          0 |         -1 |        -22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_odgenulo_wpftmp.GlobalUsings.g.cs                         | C#         |         -5 |         -1 |         -1 |         -7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_qjmx0t4d_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_qjmx0t4d_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_qjmx0t4d_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_sswhkxrf_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_sswhkxrf_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_sswhkxrf_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_tfrhgqwr_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_tfrhgqwr_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_tfrhgqwr_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_w3v0y4tx_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_w3v0y4tx_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_w3v0y4tx_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_wrjp40mv_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_wrjp40mv_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_wrjp40mv_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_yaotywpv_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_yaotywpv_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_yaotywpv_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zobgbrf5_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zobgbrf5_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zobgbrf5_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zp13eayf_wpftmp.AssemblyInfo.cs                           | C#         |         11 |         10 |          5 |         26 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zp13eayf_wpftmp.GeneratedMSBuildEditorConfig.editorconfig | Properties |         21 |          0 |          1 |         22 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\Debug\net8.0-windows\TROIEditor_zp13eayf_wpftmp.GlobalUsings.g.cs                         | C#         |          5 |          1 |          1 |          7 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_g0gpft5z_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |         83 |          0 |          0 |         83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_g0gpft5z_wpftmp.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_g0gpft5z_wpftmp.csproj.nuget.g.targets                                         | XML        |          6 |          0 |          0 |          6 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_odgenulo_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |        -83 |          0 |          0 |        -83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_odgenulo_wpftmp.csproj.nuget.g.props                                           | XML        |        -16 |          0 |          0 |        -16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_odgenulo_wpftmp.csproj.nuget.g.targets                                         | XML        |         -6 |          0 |          0 |         -6 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_qjmx0t4d_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |         83 |          0 |          0 |         83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_qjmx0t4d_wpftmp.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_qjmx0t4d_wpftmp.csproj.nuget.g.targets                                         | XML        |          6 |          0 |          0 |          6 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_w3v0y4tx_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |         83 |          0 |          0 |         83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_w3v0y4tx_wpftmp.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_w3v0y4tx_wpftmp.csproj.nuget.g.targets                                         | XML        |          6 |          0 |          0 |          6 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_wrjp40mv_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |         83 |          0 |          0 |         83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_wrjp40mv_wpftmp.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_wrjp40mv_wpftmp.csproj.nuget.g.targets                                         | XML        |          6 |          0 |          0 |          6 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_yaotywpv_wpftmp.csproj.nuget.dgspec.json                                       | JSON       |         83 |          0 |          0 |         83 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_yaotywpv_wpftmp.csproj.nuget.g.props                                           | XML        |         16 |          0 |          0 |         16 |
+| e:\project\2025\TROIEditor\TROIEditor\obj\TROIEditor_yaotywpv_wpftmp.csproj.nuget.g.targets                                         | XML        |          6 |          0 |          0 |          6 |
+| Total                                                                                                                               |            |      5,400 |        264 |        179 |      5,843 |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
