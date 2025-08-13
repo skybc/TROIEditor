@@ -93,8 +93,8 @@ public static class HitTestService
                 // 矩形：0-7为缩放控制点，8为旋转控制点
                 return controlPointIndex == 8 ? Models.RoiHitType.RotateHandle : Models.RoiHitType.ScaleHandle;
             case EllipseRoi _ when roi is not CircleRoi:
-                // 椭圆：0-7为缩放控制点，8为旋转控制点
-                return controlPointIndex == 8 ? Models.RoiHitType.RotateHandle : Models.RoiHitType.ScaleHandle;
+                // 椭圆：0-3为轴向缩放控制点，4为旋转控制点
+                return controlPointIndex == 4 ? Models.RoiHitType.RotateHandle : Models.RoiHitType.ScaleHandle;
             case CircleRoi _:
                 // 圆形：所有控制点都是缩放控制点
                 return Models.RoiHitType.ScaleHandle;
@@ -232,17 +232,13 @@ public static class HitTestService
     {
         var points = new List<Point>();
 
-        // 8个控制点
+        // 4个轴向控制点（右、上、左、下）
         var localPoints = new[]
         {
-            new Point(-ellipse.RadiusX, 0),              // 左
-            new Point(-ellipse.RadiusX * 0.707, -ellipse.RadiusY * 0.707), // 左上
-            new Point(0, -ellipse.RadiusY),              // 上
-            new Point(ellipse.RadiusX * 0.707, -ellipse.RadiusY * 0.707),  // 右上
-            new Point(ellipse.RadiusX, 0),               // 右
-            new Point(ellipse.RadiusX * 0.707, ellipse.RadiusY * 0.707),   // 右下
-            new Point(0, ellipse.RadiusY),               // 下
-            new Point(-ellipse.RadiusX * 0.707, ellipse.RadiusY * 0.707),  // 左下
+            new Point(ellipse.RadiusX, 0),   // 右边控制点 (X轴正方向)
+            new Point(0, -ellipse.RadiusY),  // 上边控制点 (Y轴负方向)
+            new Point(-ellipse.RadiusX, 0),  // 左边控制点 (X轴负方向)
+            new Point(0, ellipse.RadiusY),   // 下边控制点 (Y轴正方向)
         };
 
         // 变换到世界坐标
@@ -351,18 +347,17 @@ public static class HitTestService
             case RectRoi rect:
                 rect.UpdateByControlPoint(controlPointIndex, newPosition);
                 break;
-            // 其他类型的 ROI 控制点更新可以在这里添加
             case EllipseRoi ellipse when ellipse is not CircleRoi:
-                // TODO: 椭圆控制点更新逻辑
+                ellipse.UpdateByControlPoint(controlPointIndex, newPosition);
                 break;
             case CircleRoi circle:
                 circle.UpdateByControlPoint(controlPointIndex, newPosition);
                 break;
             case PolygonRoi polygon:
-                // TODO: 多边形控制点更新逻辑
+                polygon.UpdateByControlPoint(controlPointIndex, newPosition);
                 break;
             case SectorRoi sector:
-                // TODO: 扇形控制点更新逻辑
+                sector.UpdateByControlPoint(controlPointIndex, newPosition);
                 break;
         }
     }
