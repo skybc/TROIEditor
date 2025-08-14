@@ -34,21 +34,27 @@ public partial class RoiEditorControl : UserControl
         if (d is RoiEditorControl control)
         {
             control.grid.DataContext = e.NewValue;
-            
+            control.RoiContextMenu.DataContext = e.NewValue;
             // 取消旧的事件订阅
             if (e.OldValue is RoiEditorViewModel oldViewModel)
             {
                 oldViewModel.PropertyChanged -= control.OnViewModelPropertyChanged;
+                oldViewModel.SelectedRois.CollectionChanged -= control.SelectedRois_CollectionChanged;
             }
-            
+
             // 订阅新的事件
             if (e.NewValue is RoiEditorViewModel newViewModel)
             {
+                newViewModel.PropertyChanged -= control.OnViewModelPropertyChanged;
                 newViewModel.PropertyChanged += control.OnViewModelPropertyChanged;
+                newViewModel.SelectedRois.CollectionChanged -= control.SelectedRois_CollectionChanged;
+                newViewModel.SelectedRois.CollectionChanged += control.SelectedRois_CollectionChanged;
                 control.InvalidateVisual();
             }
         }
     }
+
+
 
     #endregion
 
@@ -58,7 +64,7 @@ public partial class RoiEditorControl : UserControl
     public RoiEditorControl()
     {
         InitializeComponent();
-        
+
         // 默认创建 ViewModel
         if (ViewModel == null)
         {
@@ -83,16 +89,16 @@ public partial class RoiEditorControl : UserControl
             case nameof(RoiEditorViewModel.ImageSize):
             case nameof(RoiEditorViewModel.Zoom):
             case nameof(RoiEditorViewModel.Pan):
-            
+
             // ROI 相关属性
             case nameof(RoiEditorViewModel.Rois):
             case nameof(RoiEditorViewModel.SelectedRois):
-            
+
             // 绘制状态属性
             case nameof(RoiEditorViewModel.IsDrawing):
             case nameof(RoiEditorViewModel.CreatingRoi):
             case nameof(RoiEditorViewModel.IsRealTimeDrawing):
-            
+
             // 交互状态属性
             case nameof(RoiEditorViewModel.IsBatchSelecting):
             case nameof(RoiEditorViewModel.BatchSelectRect):
@@ -103,7 +109,7 @@ public partial class RoiEditorControl : UserControl
             case nameof(RoiEditorViewModel.DraggingRoi): // 修复：添加拖动ROI状态监听
             case nameof(RoiEditorViewModel.SectorDrawingStep): // 修复：添加扇形绘制步骤状态监听
             case nameof(RoiEditorViewModel.SectorFixedRadius): // 修复：添加扇形固定半径状态监听
-            
+
             // 控制点编辑状态属性 - 新增
             case nameof(RoiEditorViewModel.EditingRoi):
             case nameof(RoiEditorViewModel.EditingControlPointIndex):
@@ -113,17 +119,51 @@ public partial class RoiEditorControl : UserControl
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void SelectedRois_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+    {
+        this.InvalidateVisual();
+        ViewModel.UnionCommand.NotifyCanExecuteChanged();
+        ViewModel.IntersectCommand.NotifyCanExecuteChanged();
+        ViewModel.SubtractCommand.NotifyCanExecuteChanged();
+        ViewModel.DeleteRoiCommand.NotifyCanExecuteChanged();
+        
+
+    }
+
+    /// <summary>
     /// 鼠标按下事件处理 - 保持现有接口，ViewModel 处理具体逻辑
     /// </summary>
     protected override void OnMouseDown(MouseButtonEventArgs e)
     {
         base.OnMouseDown(e);
-        
+
         // 获得焦点以接收键盘事件
         Focus();
-        
-        // 获取相对于画布的鼠标位置
+
         var position = e.GetPosition(this);
+        // 获取相对于画布的鼠标位置
+        if (e.ChangedButton == MouseButton.Right && ViewModel.IsDrawing == false)
+        {
+            // 判断是否处于绘制多边形，扇形，如果不是，则切换到选择模式
+            if (!ViewModel.TryToSelect())
+            {
+                return;
+            }
+
+            if (this.grid.ContextMenu != null)
+            {
+                var imagePoint = Services.TransformService.ScreenToImage(position, ViewModel.Zoom, ViewModel.Pan);
+                // 更新 ViewModel 的右键菜单状态
+                ViewModel.UpdateContextMenuState(imagePoint); 
+                this.grid.ContextMenu.IsOpen = true;
+                e.Handled = true;
+                return;
+            }
+        }
         ViewModel?.HandleMouseDown(position, e.ChangedButton);
     }
 
@@ -133,9 +173,9 @@ public partial class RoiEditorControl : UserControl
     protected override void OnMouseMove(MouseEventArgs e)
     {
         base.OnMouseMove(e);
-        
+
         var position = e.GetPosition(this);
-        ViewModel?.HandleMouseMove(position);
+        ViewModel?.HandleMouseMove(position,e);
     }
 
     /// <summary>
@@ -144,7 +184,7 @@ public partial class RoiEditorControl : UserControl
     protected override void OnMouseUp(MouseButtonEventArgs e)
     {
         base.OnMouseUp(e);
-        
+
         var position = e.GetPosition(this);
         ViewModel?.HandleMouseUp(position, e.ChangedButton);
     }
@@ -155,7 +195,7 @@ public partial class RoiEditorControl : UserControl
     protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
     {
         base.OnMouseDoubleClick(e);
-        
+
         var position = e.GetPosition(this);
         ViewModel?.HandleMouseDoubleClick(position);
     }
@@ -166,12 +206,12 @@ public partial class RoiEditorControl : UserControl
     protected override void OnMouseWheel(MouseWheelEventArgs e)
     {
         base.OnMouseWheel(e);
-        
+
         if (ViewModel != null)
         {
             var position = e.GetPosition(this);
             var zoomFactor = e.Delta > 0 ? 1.1 : 1.0 / 1.1;
-            
+
             // 如果按住 Ctrl 键，进行更精细的缩放
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
             {
@@ -181,11 +221,11 @@ public partial class RoiEditorControl : UserControl
             // 以鼠标位置为中心缩放
             var (newZoom, newPan) = Services.TransformService.CalculateCenterZoom(
                 position, zoomFactor, ViewModel.Zoom, ViewModel.Pan);
-            
+
             ViewModel.Zoom = Math.Max(ViewModel.MinZoom, Math.Min(ViewModel.MaxZoom, newZoom));
             ViewModel.Pan = newPan;
         }
-        
+
         e.Handled = true;
     }
 
@@ -195,7 +235,7 @@ public partial class RoiEditorControl : UserControl
     protected override void OnKeyDown(KeyEventArgs e)
     {
         base.OnKeyDown(e);
-        
+
         ViewModel?.HandleKeyDown(e.Key);
         e.Handled = true;
     }
@@ -238,7 +278,7 @@ public partial class RoiEditorControl : UserControl
     {
         // 1. 先调用基类方法，确保基础 UI 正常渲染
         base.OnRender(drawingContext);
-        
+
         // 2. 如果没有 ViewModel，直接返回
         if (ViewModel == null) return;
 
@@ -248,12 +288,12 @@ public partial class RoiEditorControl : UserControl
         // 4. 获取图像信息和尺寸
         var imageSource = ViewModel.ImageSource;
         Size imageSize;
-        
+
         // 如果有图像源，从图像源获取真实尺寸；否则使用 ViewModel 中的尺寸
         if (imageSource != null)
         {
             imageSize = new Size(imageSource.Width, imageSource.Height);
-            
+
             // 同步更新 ViewModel 的图像尺寸（确保数据一致性）
             if (ViewModel.ImageSize != imageSize)
             {
@@ -329,9 +369,10 @@ public partial class RoiEditorControl : UserControl
     /// <param name="drawingContext">绘图上下文</param>
     /// <param name="roi">要绘制的 ROI</param>
     /// <param name="isCreating">是否为正在创建的 ROI</param>
-    private void DrawRoi(DrawingContext drawingContext, Models.Roi.RoiBase roi, bool isCreating = false)
+    private void DrawRoi(DrawingContext drawingContext, Models.Roi.RoiBase roi, bool isCreating)
     {
         var geometry = roi.GetGeometry();
+
         if (geometry == null || geometry.IsEmpty()) return;
 
         // 应用 ROI 的变换
@@ -340,7 +381,10 @@ public partial class RoiEditorControl : UserControl
             geometry = geometry.Clone();
             var transformGroup = new TransformGroup();
             if (geometry.Transform != null)
+            {
                 transformGroup.Children.Add(geometry.Transform);
+            }
+
             transformGroup.Children.Add(roi.Transform);
             geometry.Transform = transformGroup;
         }
@@ -436,10 +480,10 @@ public partial class RoiEditorControl : UserControl
         Brush fillBrush;
         Pen strokePen;
         double size = baseSize;
-        
+
         // 检查是否为正在编辑的控制点
         bool isEditing = ViewModel!.EditingRoi == roi && ViewModel.EditingControlPointIndex == controlPointIndex;
-        
+
         // 根据 ROI 类型和控制点索引确定样式
         switch (roi)
         {
@@ -449,27 +493,27 @@ public partial class RoiEditorControl : UserControl
                     fillBrush = isEditing ? Brushes.Yellow : Brushes.LightBlue;
                     strokePen = new Pen(isEditing ? Brushes.Red : Brushes.Blue, isEditing ? 2.0 / ViewModel.Zoom : 1.5 / ViewModel.Zoom);
                     size = baseSize * 1.5;
-                    
+
                     // 绘制圆形旋转控制点
                     drawingContext.DrawEllipse(fillBrush, strokePen, point, size, size);
-                    
+
                     // 在旋转控制点中心绘制旋转图标（小十字）
                     var crossSize = size * 0.4;
                     var crossPen = new Pen(isEditing ? Brushes.Red : Brushes.DarkBlue, 1.0 / ViewModel.Zoom);
-                    drawingContext.DrawLine(crossPen, 
-                        new Point(point.X - crossSize, point.Y), 
+                    drawingContext.DrawLine(crossPen,
+                        new Point(point.X - crossSize, point.Y),
                         new Point(point.X + crossSize, point.Y));
-                    drawingContext.DrawLine(crossPen, 
-                        new Point(point.X, point.Y - crossSize), 
+                    drawingContext.DrawLine(crossPen,
+                        new Point(point.X, point.Y - crossSize),
                         new Point(point.X, point.Y + crossSize));
-                    
+
                     return;
                 }
                 else // 缩放控制点
                 {
                     fillBrush = isEditing ? Brushes.Yellow : Brushes.White;
                     strokePen = new Pen(isEditing ? Brushes.Red : Brushes.Black, isEditing ? 2.0 / ViewModel.Zoom : 1.0 / ViewModel.Zoom);
-                    
+
                     // 角点使用较大的正方形
                     if (controlPointIndex % 2 == 0) // 0,2,4,6 是角点
                     {
@@ -481,7 +525,7 @@ public partial class RoiEditorControl : UserControl
                     }
                 }
                 break;
-                
+
             case Models.Roi.EllipseRoi _ when roi is not Models.Roi.CircleRoi:
                 if (controlPointIndex == 4) // 旋转控制点
                 {
@@ -489,15 +533,15 @@ public partial class RoiEditorControl : UserControl
                     strokePen = new Pen(isEditing ? Brushes.Red : Brushes.Blue, isEditing ? 2.0 / ViewModel.Zoom : 1.5 / ViewModel.Zoom);
                     size = baseSize * 1.5;
                     drawingContext.DrawEllipse(fillBrush, strokePen, point, size, size);
-                    
+
                     // 在旋转控制点中心绘制旋转图标（小十字）
                     var crossSize = size * 0.4;
                     var crossPen = new Pen(isEditing ? Brushes.Red : Brushes.DarkBlue, 1.0 / ViewModel.Zoom);
-                    drawingContext.DrawLine(crossPen, 
-                        new Point(point.X - crossSize, point.Y), 
+                    drawingContext.DrawLine(crossPen,
+                        new Point(point.X - crossSize, point.Y),
                         new Point(point.X + crossSize, point.Y));
-                    drawingContext.DrawLine(crossPen, 
-                        new Point(point.X, point.Y - crossSize), 
+                    drawingContext.DrawLine(crossPen,
+                        new Point(point.X, point.Y - crossSize),
                         new Point(point.X, point.Y + crossSize));
                     return;
                 }
@@ -511,19 +555,19 @@ public partial class RoiEditorControl : UserControl
                     }
                 }
                 break;
-                
+
             case Models.Roi.CircleRoi _:
                 fillBrush = isEditing ? Brushes.Yellow : Brushes.LightGreen;
                 strokePen = new Pen(isEditing ? Brushes.Red : Brushes.Green, isEditing ? 2.0 / ViewModel.Zoom : 1.0 / ViewModel.Zoom);
                 break;
-                
+
             case Models.Roi.PolygonRoi _:
                 fillBrush = isEditing ? Brushes.Yellow : Brushes.Orange;
                 strokePen = new Pen(isEditing ? Brushes.Red : Brushes.DarkOrange, isEditing ? 2.0 / ViewModel.Zoom : 1.0 / ViewModel.Zoom);
                 // 多边形顶点使用圆形
                 drawingContext.DrawEllipse(fillBrush, strokePen, point, isEditing ? size * 1.3 : size, isEditing ? size * 1.3 : size);
                 return;
-                
+
             case Models.Roi.SectorRoi _:
                 // 扇形控制点根据类型使用不同样式
                 if (controlPointIndex == 0) // 中心点
@@ -540,7 +584,7 @@ public partial class RoiEditorControl : UserControl
                 }
                 drawingContext.DrawEllipse(fillBrush, strokePen, point, size, size);
                 return;
-                
+
             default:
                 fillBrush = isEditing ? Brushes.Yellow : Brushes.White;
                 strokePen = new Pen(isEditing ? Brushes.Red : Brushes.Black, isEditing ? 2.0 / ViewModel.Zoom : 1.0 / ViewModel.Zoom);
@@ -554,7 +598,7 @@ public partial class RoiEditorControl : UserControl
             size * 2,
             size * 2
         );
-        
+
         drawingContext.DrawRectangle(fillBrush, strokePen, handleRect);
     }
 
@@ -590,7 +634,7 @@ public partial class RoiEditorControl : UserControl
             var currentPoint = ViewModel.CurrentMousePosition;
             var previewPen = new Pen(Brushes.Orange, 1.0 / ViewModel.Zoom);
             previewPen.DashStyle = DashStyles.Dot;
-            
+
             drawingContext.DrawLine(previewPen, lastPoint, currentPoint);
         }
     }
@@ -638,7 +682,7 @@ public partial class RoiEditorControl : UserControl
     private void DrawBatchSelectionRect(DrawingContext drawingContext)
     {
         var rect = ViewModel!.BatchSelectRect;
-        
+
         // 将图像坐标的选择框转换为屏幕坐标
         var topLeft = Services.TransformService.ImageToScreen(rect.TopLeft, ViewModel.Zoom, ViewModel.Pan);
         var bottomRight = Services.TransformService.ImageToScreen(rect.BottomRight, ViewModel.Zoom, ViewModel.Pan);
@@ -658,7 +702,7 @@ public partial class RoiEditorControl : UserControl
     protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
     {
         base.OnRenderSizeChanged(sizeInfo);
-        
+
         // 这里可以将视口大小信息传递给 ViewModel，用于适合窗口功能
         if (ViewModel != null)
         {
@@ -666,4 +710,5 @@ public partial class RoiEditorControl : UserControl
             // ViewModel.ViewportSize = new Size(ActualWidth, ActualHeight);
         }
     }
+
 }

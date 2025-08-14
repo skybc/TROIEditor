@@ -1,16 +1,17 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Win32;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Win32;
 using TROIEditor.Models;
 using TROIEditor.Models.Roi;
 using TROIEditor.Services;
@@ -22,50 +23,86 @@ namespace TROIEditor.ViewModels;
 /// </summary>
 public partial class RoiEditorViewModel : ObservableObject
 {
- 
-
     #region Fields
 
+    // ROI 集合
     private ObservableCollection<RoiBase> _rois = new();
+    // 选中的 ROI 集合
     private ObservableCollection<RoiBase> _selectedRois = new();
+    // 当前工具
     private RoiTool _currentTool = RoiTool.Select;
+    // 背景图像源
     private ImageSource? _imageSource;
+    // 图像尺寸
     private Size _imageSize;
+    // 缩放比例
     private double _zoom = 1.0;
+    // 最小缩放
     private double _minZoom = 0.01;
+    // 最大缩放
     private double _maxZoom = 50.0;
+    // 平移偏移
     private Point _pan = new();
+    // 命中测试像素容差
     private double _hitTestPixelTolerance = 3.0;
+    // 当前鼠标位置（图像坐标）
     private Point _currentMousePosition;
+    // 状态信息
     private string _statusText = "就绪";
+    // 是否正在绘制
     private bool _isDrawing;
 
     // 新增字段：支持实时绘制和交互增强
-    private RoiBase? _creatingRoi;           // 正在创建的 ROI
-    private Point _drawStartPoint;           // 绘制起始点
-    private bool _isRealTimeDrawing;         // 实时绘制标记
-    private bool _isBatchSelecting;          // 批量选择状态
-    private Point _batchSelectStartPoint;    // 批量选择起始点
-    private Rect _batchSelectRect;           // 批量选择框
-    private bool _isCanvasPanning;           // 画布平移状态
-    private Point _panStartPoint;            // 平移起始点
-    private Point _originalPan;              // 原始平移值
-    private bool _isDraggingRoi;             // ROI 拖动状态
-    private Vector _dragOffset;              // 拖动偏移量
-    private RoiBase? _draggingRoi;           // 正在拖动的 ROI
-    private RoiBase? _editingRoi;            // 正在编辑的 ROI
-    private int _editingControlPointIndex;   // 编辑的控制点索引
-    private Point _lastMousePosition;        // 上一个鼠标位置
+    // 正在创建的 ROI
+    private RoiBase? _creatingRoi;
+    // 绘制起始点
+    private Point _drawStartPoint;
+    // 实时绘制标记
+    private bool _isRealTimeDrawing;
+    // 批量选择状态
+    private bool _isBatchSelecting;
+    // 批量选择起始点
+    private Point _batchSelectStartPoint;
+    // 批量选择框
+    private Rect _batchSelectRect;
+    // 画布平移状态
+    private bool _isCanvasPanning;
+    // 平移起始点
+    private Point _panStartPoint;
+    // 原始平移值
+    private Point _originalPan;
+    // ROI 拖动状态
+    private bool _isDraggingRoi;
+    // 拖动偏移量
+    private Vector _dragOffset;
+    // 正在拖动的 ROI
+    private RoiBase? _draggingRoi;
+    // 正在编辑的 ROI
+    private RoiBase? _editingRoi;
+    // 编辑的控制点索引
+    private int _editingControlPointIndex;
+    // 上一个鼠标位置
+    private Point _lastMousePosition;
 
     // 多边形绘制专用
-    private bool _isPolygonDrawing;          // 多边形绘制状态
-    private List<Point> _polygonPoints = new(); // 多边形临时顶点
+    // 多边形绘制状态
+    private bool _isPolygonDrawing;
+    // 多边形临时顶点
+    private List<Point> _polygonPoints = new();
 
-    // 扇形绘制专用 - 修改：将圆弧改为扇形
-    private bool _isSectorDrawing;           // 扇形绘制状态
-    private int _sectorDrawingStep;          // 扇形绘制步骤(0:设置中心点, 1:拖拽设置半径, 2:固定半径后设置角度)
-    private double _sectorFixedRadius;       // 固定的半径值（在第三步后保存）
-    private Point _sectorRadiusStartPoint;   // 半径起始点（用于显示半径参考线）
+    // 扇形绘制专用
+    // 扇形绘制状态
+    private bool _isSectorDrawing;
+    // 扇形绘制步骤(0:设置中心点, 1:拖拽设置半径, 2:固定半径后设置角度)
+    private int _sectorDrawingStep;
+    // 固定的半径值（在第三步后保存）
+    private double _sectorFixedRadius;
+    // 半径起始点（用于显示半径参考线）
+    private Point _sectorRadiusStartPoint;
+
+    // 右键菜单相关
+    // 右键点击的目标 ROI
+    private RoiBase? _rightClickTargetRoi;
 
     #endregion
 
@@ -86,7 +123,7 @@ public partial class RoiEditorViewModel : ObservableObject
     public ObservableCollection<RoiBase> SelectedRois
     {
         get => _selectedRois;
-        set => SetProperty(ref _selectedRois, value);
+        private set => SetProperty(ref _selectedRois, value);
     }
 
     /// <summary>
@@ -272,7 +309,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 是否正在绘制扇形 - 修改：将圆弧改为扇形
+    /// 是否正在绘制扇形
     /// </summary>
     public bool IsSectorDrawing
     {
@@ -281,7 +318,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 扇形绘制步骤 - 修改：将圆弧改为扇形
+    /// 扇形绘制步骤
     /// </summary>
     public int SectorDrawingStep
     {
@@ -290,7 +327,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 扇形固定半径值 - 修改：将圆弧改为扇形
+    /// 扇形固定半径值
     /// </summary>
     public double SectorFixedRadius
     {
@@ -299,7 +336,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 扇形半径起始点 - 修改：将圆弧改为扇形
+    /// 扇形半径起始点
     /// </summary>
     public Point SectorRadiusStartPoint
     {
@@ -308,7 +345,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 正在编辑的 ROI - 新增属性，公开访问编辑状态
+    /// 正在编辑的 ROI
     /// </summary>
     public RoiBase? EditingRoi
     {
@@ -317,7 +354,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 正在编辑的控制点索引 - 新增属性，公开访问控制点索引
+    /// 正在编辑的控制点索引
     /// </summary>
     public int EditingControlPointIndex
     {
@@ -416,7 +453,7 @@ public partial class RoiEditorViewModel : ObservableObject
     }
 
     /// <summary>
-    /// 新建扇形命令 - 修改：将圆弧改为扇形
+    /// 新建扇形命令
     /// </summary>
     [RelayCommand]
     private void NewSector()
@@ -436,7 +473,7 @@ public partial class RoiEditorViewModel : ObservableObject
             var result = GeometryBooleanService.Union(SelectedRois);
             Rois.Add(result);
             StatusText = $"并集运算完成，生成新的 ROI";
-            
+
             // 发送消息通知布尔运算完成
             WeakReferenceMessenger.Default.Send(new BooleanOperationCompletedMessage(result, RoiCombineMode.Union));
         }
@@ -457,7 +494,7 @@ public partial class RoiEditorViewModel : ObservableObject
             var result = GeometryBooleanService.Intersect(SelectedRois);
             Rois.Add(result);
             StatusText = $"交集运算完成，生成新的 ROI";
-            
+
             WeakReferenceMessenger.Default.Send(new BooleanOperationCompletedMessage(result, RoiCombineMode.Intersect));
         }
         catch (Exception ex)
@@ -477,7 +514,7 @@ public partial class RoiEditorViewModel : ObservableObject
             var result = GeometryBooleanService.Subtract(SelectedRois);
             Rois.Add(result);
             StatusText = $"差集运算完成，生成新的 ROI";
-            
+
             WeakReferenceMessenger.Default.Send(new BooleanOperationCompletedMessage(result, RoiCombineMode.Subtract));
         }
         catch (Exception ex)
@@ -499,6 +536,28 @@ public partial class RoiEditorViewModel : ObservableObject
         }
         SelectedRois.Clear();
         StatusText = $"删除了 {toDelete.Count} 个 ROI";
+    }
+
+    /// <summary>
+    /// 删除 ROI 命令
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanDeleteRoi))]
+    private void DeleteRoi()
+    {
+        if (_rightClickTargetRoi != null)
+        {
+            // 删除右键点击的 ROI
+            Rois.Remove(_rightClickTargetRoi);
+            SelectedRois.Remove(_rightClickTargetRoi);
+            StatusText = $"删除了 ROI: {_rightClickTargetRoi.Name}";
+            _rightClickTargetRoi = null;
+        }
+        else if (SelectedRois.Count > 0)
+        {
+            // 删除当前选中的 ROI
+            DeleteSelected();
+        }
+        // 更新界面
     }
 
     /// <summary>
@@ -596,7 +655,7 @@ public partial class RoiEditorViewModel : ObservableObject
                     var imageSize = ImageSize.Width > 0 && ImageSize.Height > 0 ? ImageSize : new Size(800, 600);
                     MaskExportService.ExportMask(Rois, imageSize, saveFileDialog.FileName);
                 });
-                
+
                 StatusText = $"掩码已导出到: {saveFileDialog.FileName}";
             }
         }
@@ -683,18 +742,35 @@ public partial class RoiEditorViewModel : ObservableObject
         else if (button == MouseButton.Right)
         {
             HandleRightMouseDown(imagePoint);
+
         }
+        else if (button == MouseButton.Middle)
+        {
+            HandleMiddleMouseDown(imagePoint);
+        }
+
+    }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="imagePoint"></param>
+    private void HandleMiddleMouseDown(Point imagePoint)
+    {
+        StartCanvasPan(imagePoint);
     }
 
     /// <summary>
     /// 处理鼠标移动事件 - 增强版本支持实时绘制和交互
     /// </summary>
     /// <param name="point">鼠标位置（屏幕坐标）</param>
-    public void HandleMouseMove(Point point)
+    public void HandleMouseMove(Point point, MouseEventArgs e)
     {
         var imagePoint = TransformService.ScreenToImage(point, Zoom, Pan);
         CurrentMousePosition = imagePoint;
-
+        if (IsCanvasPanning && e.MiddleButton != MouseButtonState.Pressed)
+        {
+            FinishCanvasPan();
+        }
         // 根据当前状态处理鼠标移动
         if (IsRealTimeDrawing && CreatingRoi != null)
         {
@@ -757,6 +833,20 @@ public partial class RoiEditorViewModel : ObservableObject
         else if (button == MouseButton.Right)
         {
             HandleRightMouseUp(imagePoint);
+        }
+        else if (button == MouseButton.Middle)
+        {
+            HandleMiddleMouseUp();
+
+        }
+    }
+
+    private void HandleMiddleMouseUp()
+    {
+        if (IsCanvasPanning)
+        {
+            // 完成画布平移
+            FinishCanvasPan();
         }
     }
 
@@ -846,12 +936,8 @@ public partial class RoiEditorViewModel : ObservableObject
     /// <param name="imagePoint">图像坐标点</param>
     private void HandleRightMouseDown(Point imagePoint)
     {
-        if (CurrentTool == RoiTool.Select && !IsPolygonDrawing && !IsSectorDrawing)
-        {
-            // 选择工具且没有在绘制时，右键开始画布平移
-            StartCanvasPan(imagePoint);
-        }
-        else if (IsPolygonDrawing)
+
+        if (IsPolygonDrawing)
         {
             // 多边形绘制时，右键结束绘制
             FinishPolygonDrawing();
@@ -902,11 +988,7 @@ public partial class RoiEditorViewModel : ObservableObject
     /// <param name="imagePoint">图像坐标点</param>
     private void HandleRightMouseUp(Point imagePoint)
     {
-        if (IsCanvasPanning)
-        {
-            // 完成画布平移
-            FinishCanvasPan();
-        }
+
     }
 
     /// <summary>
@@ -916,7 +998,7 @@ public partial class RoiEditorViewModel : ObservableObject
     private void HandleSelectLeftMouseDown(Point imagePoint)
     {
         var (hitRoi, hitResult) = HitTestService.HitTest(Rois, imagePoint, HitTestPixelTolerance, Zoom);
-        
+
         if (hitRoi != null)
         {
             // 点击到 ROI
@@ -1074,11 +1156,11 @@ public partial class RoiEditorViewModel : ObservableObject
         IsDrawing = true;
         PolygonPoints.Clear();
         PolygonPoints.Add(startPoint);
-        
+
         // 创建多边形 ROI
         CreatingRoi = new PolygonRoi { IsClosed = false };
         ((PolygonRoi)CreatingRoi).AddPoint(startPoint);
-        
+
         StatusText = "多边形绘制中，右键结束绘制";
     }
 
@@ -1089,12 +1171,12 @@ public partial class RoiEditorViewModel : ObservableObject
     private void AddPolygonPoint(Point point)
     {
         PolygonPoints.Add(point);
-        
+
         if (CreatingRoi is PolygonRoi polygon)
         {
             polygon.AddPoint(point);
         }
-        
+
         OnPropertyChanged(nameof(CreatingRoi));
         OnPropertyChanged(nameof(PolygonPoints));
     }
@@ -1117,7 +1199,7 @@ public partial class RoiEditorViewModel : ObservableObject
                 StatusText = "顶点数不足3个，多边形绘制已取消";
             }
         }
-        
+
         ClearPolygonDrawing();
     }
 
@@ -1160,11 +1242,11 @@ public partial class RoiEditorViewModel : ObservableObject
         IsSectorDrawing = true;
         IsDrawing = true;
         SectorDrawingStep = 0; // 0: 设置中心点已完成，准备拖拽设置半径
-        
+
         // 创建扇形 ROI，设定中心点
         CreatingRoi = new SectorRoi { Center = centerPoint, Radius = 0 };
         SectorRadiusStartPoint = centerPoint; // 保存半径起始点用于参考线显示
-        
+
         StatusText = "扇形绘制：中心已设定，拖动鼠标设置半径，松开左键固定半径";
     }
 
@@ -1179,7 +1261,7 @@ public partial class RoiEditorViewModel : ObservableObject
             // 实时计算半径
             var radius = (currentPoint - sector.Center).Length;
             sector.Radius = radius;
-            
+
             // 触发重绘
             OnPropertyChanged(nameof(CreatingRoi));
         }
@@ -1194,13 +1276,13 @@ public partial class RoiEditorViewModel : ObservableObject
         {
             SectorFixedRadius = sector.Radius; // 保存当前半径为固定值
             SectorDrawingStep = 1; // 进入角度设置阶段
-            
+
             // 设置扇形的起始角度为当前鼠标方向
             var currentVector = CurrentMousePosition - sector.Center;
             var startAngle = Math.Atan2(currentVector.Y, currentVector.X) * 180 / Math.PI;
             sector.StartAngle = startAngle;
             sector.EndAngle = startAngle; // 初始时起始角度和结束角度相同
-            
+
             StatusText = "扇形绘制：半径已固定，移动鼠标设置扇形角度，左键或右键完成绘制";
         }
     }
@@ -1216,10 +1298,10 @@ public partial class RoiEditorViewModel : ObservableObject
             // 计算当前鼠标位置相对于圆心的角度
             var currentVector = currentPoint - sector.Center;
             var currentAngle = Math.Atan2(currentVector.Y, currentVector.X) * 180 / Math.PI;
-            
+
             // 更新结束角度，起始角度保持不变
             sector.EndAngle = currentAngle;
-            
+
             // 触发重绘
             OnPropertyChanged(nameof(CreatingRoi));
         }
@@ -1242,7 +1324,7 @@ public partial class RoiEditorViewModel : ObservableObject
                 StatusText = "扇形半径太小，已取消创建";
             }
         }
-        
+
         ClearSectorDrawing();
     }
 
@@ -1279,7 +1361,7 @@ public partial class RoiEditorViewModel : ObservableObject
     {
         var rect = new Rect(_batchSelectStartPoint, currentPoint);
         BatchSelectRect = rect;
-        
+
         // 实时更新选中的 ROI
         UpdateBatchSelectedRois();
     }
@@ -1291,7 +1373,7 @@ public partial class RoiEditorViewModel : ObservableObject
     {
         // 获取与选择框相交的所有 ROI
         var intersectingRois = HitTestService.GetRoisInRect(Rois, BatchSelectRect, true);
-        
+
         // 更新选中状态
         foreach (var roi in Rois)
         {
@@ -1342,7 +1424,7 @@ public partial class RoiEditorViewModel : ObservableObject
         var screenStartPoint = TransformService.ImageToScreen(_panStartPoint, Zoom, _originalPan);
         var screenCurrentPoint = TransformService.ImageToScreen(currentPoint, Zoom, _originalPan);
         var delta = screenCurrentPoint - screenStartPoint;
-        
+
         Pan = new Point(_originalPan.X + delta.X, _originalPan.Y + delta.Y);
     }
 
@@ -1379,7 +1461,7 @@ public partial class RoiEditorViewModel : ObservableObject
             var delta = currentPoint - _lastMousePosition;
             DraggingRoi.Move(delta);
             _dragOffset += delta;
-            
+
             // 修复：立即触发界面刷新，确保拖动效果流畅实时更新
             OnPropertyChanged(nameof(Rois));
             OnPropertyChanged(nameof(DraggingRoi));
@@ -1419,7 +1501,7 @@ public partial class RoiEditorViewModel : ObservableObject
         {
             // 使用 HitTestService 的更新方法处理控制点更新
             HitTestService.UpdateRoiControlPoint(EditingRoi, EditingControlPointIndex, currentPoint);
-            
+
             // 触发界面刷新，确保编辑过程实时可见
             OnPropertyChanged(nameof(Rois));
             OnPropertyChanged(nameof(EditingRoi));
@@ -1435,7 +1517,7 @@ public partial class RoiEditorViewModel : ObservableObject
         EditingRoi = null;
         EditingControlPointIndex = -1;
         StatusText = $"{editedRoi?.GetType().Name} 编辑完成";
-        
+
         // 确保最终状态的界面刷新
         OnPropertyChanged(nameof(Rois));
     }
@@ -1461,9 +1543,9 @@ public partial class RoiEditorViewModel : ObservableObject
             roi.IsSelected = true;
             SelectedRois.Add(roi);
         }
-        
+
         StatusText = $"选中 {SelectedRois.Count} 个 ROI";
-        
+
         // 修复：立即触发界面刷新，确保选中效果立刻可见
         OnPropertyChanged(nameof(Rois));
         OnPropertyChanged(nameof(SelectedRois));
@@ -1510,9 +1592,9 @@ public partial class RoiEditorViewModel : ObservableObject
         var zoom = $"缩放: {Zoom:F2}x";
         var roiCount = $"ROI: {Rois.Count}";
         var selected = $"选中: {SelectedRois.Count}";
-        
+
         var operation = GetCurrentOperationText();
-        
+
         StatusText = $"{coord} | {zoom} | {roiCount} | {selected}{operation}";
     }
 
@@ -1528,7 +1610,7 @@ public partial class RoiEditorViewModel : ObservableObject
         if (IsBatchSelecting) return " | 批量选择中";
         if (IsCanvasPanning) return " | 画布平移中";
         if (IsDraggingRoi) return " | ROI拖动中";
-        if (EditingRoi != null) 
+        if (EditingRoi != null)
         {
             var controlType = EditingControlPointIndex == 8 ? "旋转" : "缩放";
             return $" | {controlType}控制点编辑中";
@@ -1597,7 +1679,7 @@ public partial class RoiEditorViewModel : ObservableObject
     {
         var json = await File.ReadAllTextAsync(filePath);
         var roiDataList = JsonSerializer.Deserialize<List<Dictionary<string, object>>>(json);
-        
+
         if (roiDataList != null)
         {
             Rois.Clear();
@@ -1641,7 +1723,62 @@ public partial class RoiEditorViewModel : ObservableObject
     /// <summary>
     /// 是否有任何 ROI
     /// </summary>
-    private bool HasAnyRois() => Rois.Count > 0;
+    private bool HasAnyRois() => true;
+
+    /// <summary>
+    /// 是否可以删除 ROI - 新增方法
+    /// </summary>
+    private bool CanDeleteRoi() => IsDrawing == false && SelectedRois.Count > 0;
+
+    /// <summary>
+    /// 更新右键菜单状态 - 新增方法，根据右键位置设置菜单项状态
+    /// </summary>
+    /// <param name="rightClickPoint">右键点击位置（图像坐标）</param>
+    public void UpdateContextMenuState(Point rightClickPoint)
+    {
+        _rightClickTargetRoi = null;
+
+        if (SelectedRois.Count > 0)
+        {
+            // 如果有选中的 ROI，删除菜单始终可用
+
+            return;
+        }
+
+        // 如果没有选中的 ROI，检查右键位置是否有 ROI
+        var (hitRoi, hitResult) = HitTestService.HitTest(Rois, rightClickPoint, HitTestPixelTolerance, Zoom);
+        if (hitRoi != null)
+        {
+            // 设置右键目标 ROI 并选中它
+            _rightClickTargetRoi = hitRoi;
+            SelectSingleRoi(hitRoi);
+        }
+
+        // 触发命令的 CanExecute 重新评估
+        DeleteRoiCommand.NotifyCanExecuteChanged();
+    }
+
+    /// <summary>
+    /// 尝试把当前工具切换为选择工具
+    /// </summary>
+    /// <returns></returns>
+    public bool TryToSelect()
+    {
+        if (this.IsDrawing == true)
+        {
+            return false;
+        }
+        if (this.IsBatchSelecting == true)
+        {
+            return false;
+        }
+        if (this.IsDraggingRoi == true)
+        {
+            return false;
+        }
+        this.CurrentTool = RoiTool.Select;
+        return true;
+    }
 
     #endregion
 }
@@ -1651,9 +1788,20 @@ public partial class RoiEditorViewModel : ObservableObject
 /// </summary>
 public class BooleanOperationCompletedMessage
 {
+    /// <summary>
+    /// 运算结果 ROI
+    /// </summary>
     public GeometryRoi Result { get; }
+    /// <summary>
+    /// 运算类型
+    /// </summary>
     public RoiCombineMode Operation { get; }
 
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="result">运算结果 ROI</param>
+    /// <param name="operation">运算类型</param>
     public BooleanOperationCompletedMessage(GeometryRoi result, RoiCombineMode operation)
     {
         Result = result;
