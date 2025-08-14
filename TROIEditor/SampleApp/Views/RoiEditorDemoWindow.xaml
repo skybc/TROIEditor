@@ -340,26 +340,6 @@
             </Border>
         </Grid>
 
-        <!--  状态栏  -->
-        <StatusBar Grid.Row="3">
-            <StatusBarItem>
-                <TextBlock Text="{Binding RoiEditorViewModel.StatusText}" />
-            </StatusBarItem>
-            <Separator />
-            <StatusBarItem>
-                <TextBlock>
-                    <TextBlock.Text>
-                        <MultiBinding StringFormat="鼠标: ({0:F1}, {1:F1})">
-                            <Binding Path="RoiEditorViewModel.CurrentMousePosition.X" />
-                            <Binding Path="RoiEditorViewModel.CurrentMousePosition.Y" />
-                        </MultiBinding>
-                    </TextBlock.Text>
-                </TextBlock>
-            </StatusBarItem>
-            <Separator />
-            <StatusBarItem>
-                <TextBlock Text="{Binding RoiEditorViewModel.Zoom, StringFormat=缩放: {0:P0}}" />
-            </StatusBarItem>
-        </StatusBar>
+
     </Grid>
 </Window>

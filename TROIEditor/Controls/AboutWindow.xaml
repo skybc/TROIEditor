@@ -1,0 +1,120 @@
+﻿<Window
+    x:Class="TROIEditor.AboutWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="关于 ROI 编辑器"
+    Width="550"
+    Height="600"
+    Background="#f5f5f5"
+    ResizeMode="NoResize"
+    WindowStartupLocation="CenterOwner">
+    <ScrollViewer Margin="10" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,0,0,10">
+
+            <!--  主标题  -->
+            <TextBlock
+                Margin="0,0,0,15"
+                FontSize="22"
+                FontWeight="Bold"
+                Foreground="#333"
+                Text="ROI 编辑器演示程序" />
+
+            <!--  功能特性卡片  -->
+            <Border
+                Margin="0,0,0,10"
+                Padding="10"
+                Background="White"
+                BorderBrush="#ddd"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#555"
+                        Text="功能特性" />
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="🖼️ 支持多种 ROI 类型：矩形、椭圆、圆形、多边形、圆弧" TextWrapping="Wrap" />
+                        <TextBlock Text="🔄 图像平移和缩放" TextWrapping="Wrap" />
+                        <TextBlock Text="✏️ ROI 的选择、移动、旋转和编辑" TextWrapping="Wrap" />
+                        <TextBlock Text="➕ ROI 布尔运算：并集、交集、差集" TextWrapping="Wrap" />
+                        <TextBlock Text="💾 导出掩码图像" TextWrapping="Wrap" />
+                        <TextBlock Text="📄 ROI 数据的 JSON 保存和加载" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!--  快捷键卡片  -->
+            <Border
+                Margin="0,0,0,10"
+                Padding="10"
+                Background="White"
+                BorderBrush="#ddd"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#555"
+                        Text="快捷键" />
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="🗑️ Delete - 删除选中的 ROI" TextWrapping="Wrap" />
+                        <TextBlock Text="📋 Ctrl+A - 全选 ROI" TextWrapping="Wrap" />
+                        <TextBlock Text="🔍 Ctrl+滚轮 - 精细缩放" TextWrapping="Wrap" />
+                        <TextBlock Text="❌ Esc - 取消当前操作" TextWrapping="Wrap" />
+                        <TextBlock Text="🔄 双击空白 - 重置视图" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!--  技术栈卡片  -->
+            <Border
+                Margin="0,0,0,10"
+                Padding="10"
+                Background="White"
+                BorderBrush="#ddd"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#555"
+                        Text="技术栈" />
+                    <TextBlock
+                        Margin="10,0,0,0"
+                        Text="• .NET 8 + WPF + MVVM + CommunityToolkit.Mvvm"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+
+            <!--  作者与版权卡片  -->
+            <Border
+                Margin="0,0,0,10"
+                Padding="10"
+                Background="White"
+                BorderBrush="#ddd"
+                BorderThickness="1"
+                CornerRadius="8">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,5"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#555"
+                        Text="作者与版权" />
+                    <StackPanel Margin="10,0,0,0">
+                        <TextBlock Text="👤 作者：dreammisc" TextWrapping="Wrap" />
+                        <TextBlock Text="📖 用途：仅限个人学习交流使用，不可用于商业用途" TextWrapping="Wrap" />
+                        <TextBlock Text="© 版权：dreammisc" TextWrapping="Wrap" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Window>
